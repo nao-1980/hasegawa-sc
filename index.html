@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="改訂長谷川式簡易知能評価スケール（HDS-R）の採点シート。入力内容は保存されません。">
+<title>長谷川式スケール採点シート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Zen+Maru+Gothic:wght@500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: 白地にやわらかいパステル4色と金茶のアクセント。中央寄せの見出し＋短い下線、四角い枠の採点カード、下端に固定の合計バー */
+:root{
+  --paper:#ffffff;
+  --sheet:#ffffff;
+  --ink:#3b3832;
+  --muted:#77706a;
+  --line:#dddad5;
+  --accent:#8a7140;
+  --accent-soft:#f7f2e8;
+  --pink:#e2a5c9;
+  --yellow:#f5d38a;
+  --green:#95c77f;
+  --blue:#a9c7dc;
+  --sky:#eaf3fa;
+  --warn:#b0486e;
+  --warn-soft:#fbe9f1;
+  --ok:#4d8a3a;
+  --ok-soft:#ecf6e6;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Yu Gothic",sans-serif;
+  --f-body:"BIZ UDPGothic","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,"SFMono-Regular",monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1a1918;--sheet:#222120;--ink:#ece7df;--muted:#aaa39a;--line:#3a3734;
+  --accent:#d6bd86;--accent-soft:#2c2820;--pink:#b97aa0;--yellow:#c9a95e;--green:#76a563;--blue:#7d9db3;--sky:#1f2629;
+  --warn:#eb8fb2;--warn-soft:#3a2230;--ok:#9fd38a;--ok-soft:#1f2e1a;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1a1918;--sheet:#222120;--ink:#ece7df;--muted:#aaa39a;--line:#3a3734;
+  --accent:#d6bd86;--accent-soft:#2c2820;--pink:#b97aa0;--yellow:#c9a95e;--green:#76a563;--blue:#7d9db3;--sky:#1f2629;
+  --warn:#eb8fb2;--warn-soft:#3a2230;--ok:#9fd38a;--ok-soft:#1f2e1a;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.8}
+.hero{background:linear-gradient(180deg,var(--sky) 0%,var(--paper) 70%),var(--paper);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:36px 8px}
+.stripe{display:flex;height:6px}
+.stripe i{flex:1}
+.stripe i:nth-child(1){background:var(--pink)}.stripe i:nth-child(2){background:var(--yellow)}.stripe i:nth-child(3){background:var(--green)}.stripe i:nth-child(4){background:var(--blue)}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 150px;display:flex;flex-direction:column;gap:40px}
+h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.4;letter-spacing:.12em;font-weight:700}
+h1{font-size:clamp(24px,6.4vw,32px)}
+h2{font-size:22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+h2::after{content:"";width:56px;height:3px;background:var(--accent)}
+p{margin:0}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+.lead{color:var(--muted);max-width:60ch;text-align:left}
+header{max-width:720px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.facts div{padding:12px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--sheet);border:1px solid var(--line);border-top:4px solid var(--c)}
+.facts div:nth-child(1){--c:var(--pink)}.facts div:nth-child(2){--c:var(--yellow)}.facts div:nth-child(3){--c:var(--green)}.facts div:nth-child(4){--c:var(--blue)}
+.facts b{font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.facts span{font-size:12px;color:var(--muted)}
+@media (max-width:520px){.facts{grid-template-columns:repeat(2,1fr)}}
+
+section{display:flex;flex-direction:column;gap:18px}
+.sheet{background:var(--sheet);border:1px solid var(--line)}
+.item{padding:18px 16px 20px;display:grid;grid-template-columns:34px 1fr;gap:4px 12px}
+.item+.item{border-top:1px solid var(--line)}
+.no{font-family:var(--f-display);font-weight:700;color:var(--ink);font-size:16px;width:32px;height:32px;display:grid;place-items:center;background:var(--c)}
+.item:nth-child(4n+2) .no{--c:var(--pink)}.item:nth-child(4n+3) .no{--c:var(--yellow)}.item:nth-child(4n) .no{--c:var(--green)}.item:nth-child(4n+1) .no{--c:var(--blue)}
+.ihead{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:32px}
+.ihead h3{margin:0;font-size:17px;font-family:var(--f-display);font-weight:700;letter-spacing:.04em}
+.sub{font-family:var(--f-num);font-size:14px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sub.done{color:var(--accent)}
+.note{grid-column:2;font-size:13px;color:var(--muted)}
+.q{grid-column:2;font-size:15px;padding:8px 12px;margin-top:6px;border-left:3px solid var(--accent);background:var(--accent-soft)}
+.chips{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.chip{font-size:14px;padding:3px 12px;background:var(--warn-soft);color:var(--ink);border-radius:999px;font-weight:700}
+.cl{font-size:12px;color:var(--muted);letter-spacing:.06em;font-weight:700;margin-right:4px}
+.tips{grid-column:2;margin-top:8px;font-size:13px;color:var(--muted)}
+.tips ul{margin:4px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:2px}
+.series{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--sky)}
+.seg button.wide{font-family:var(--f-body);padding:0 12px}
+.parts{grid-column:2;display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.part{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.part label,.part .pl{font-size:14px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--sheet)}
+.seg button{font-family:var(--f-num);font-size:14px;min-width:44px;height:38px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--sheet);font-weight:600}
+.seg button:disabled{opacity:.35;cursor:not-allowed}
+.seg button:focus-visible,.btn:focus-visible,.step button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cut{font-size:12px;color:var(--warn)}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px}
+.step button{width:40px;height:38px;border:0;background:transparent;color:var(--ink);font-size:18px;cursor:pointer}
+.step input{font-family:var(--f-num);width:64px;height:38px;text-align:center;border:0;border-inline:1px solid var(--line);border-radius:0;background:transparent;color:var(--ink);font-size:15px;padding:0}
+#vegnames{min-height:56px}
+.conv{font-size:12px;color:var(--muted);font-family:var(--f-num)}
+
+.memo{display:flex;flex-direction:column;gap:6px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.meta{grid-template-columns:1fr}}
+input[type=text],input[type=number]{font-family:var(--f-body);font-size:15px;color:var(--ink);background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.note2{font-size:12px;color:var(--muted)}
+.script{display:flex;flex-direction:column;gap:10px}
+.say{background:var(--sheet);border:1px solid var(--line);border-left:4px solid var(--pink);padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.say small{font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.06em}
+.say p{font-size:15px}
+textarea{font-family:var(--f-body);font-size:14px;color:var(--ink);background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:80px;resize:vertical;width:100%}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font-family:var(--f-display);font-size:15px;font-weight:700;padding:11px 20px;border-radius:4px;border:1px solid var(--accent);background:var(--accent);color:var(--sheet);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.confirm{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;padding:10px 12px;border-radius:8px;background:var(--warn-soft)}
+.toast{font-size:13px;color:var(--ok)}
+
+ul.points{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;max-width:62ch}
+.caution{background:var(--accent-soft);border:1px solid var(--line);padding:14px 16px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--sheet);border-top:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:5}
+.bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.total{display:flex;align-items:baseline;gap:6px}
+.total b{font-family:var(--f-display);font-size:32px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.total span{font-family:var(--f-num);color:var(--muted)}
+.status{font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--line);color:var(--muted);text-align:center}
+.status.warn{background:var(--warn-soft);color:var(--warn)}
+.status.ok{background:var(--ok-soft);color:var(--ok)}
+.meter{height:4px;background:var(--line);border-radius:2px;margin-top:8px;max-width:720px;margin-inline:auto;position:relative}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--pink),var(--yellow),var(--green),var(--blue));border-radius:2px;transition:width .2s}
+.meter em{position:absolute;left:calc(20/30*100%);top:-3px;bottom:-3px;width:2px;background:var(--warn)}
+@media (prefers-reduced-motion:reduce){.meter i{transition:none}}
+/* パソコン：質問と採点のポイントを左、採点ボタンを右に並べて目線の移動を減らす */
+@media (min-width:900px){
+  .wrap,.bar-in,.meter{max-width:960px}
+  .item{grid-template-columns:34px minmax(0,1fr) 300px;column-gap:24px}
+  .ihead{grid-column:2/4}
+  .q,.chips,.tips,.note{grid-column:2}
+  .parts{grid-column:3;grid-row:2/span 3;align-self:start;margin-top:6px;padding-left:20px;border-left:1px dashed var(--line)}
+  .part{flex-wrap:nowrap}
+  .lead{max-width:62ch}
+}
+/* スマホ：指で押しやすいようにボタンを大きく */
+@media (pointer:coarse){
+  .seg button{min-width:48px;height:44px}
+  .step button,.step input{height:44px}
+  .btn{padding-block:13px}
+}
+/* 日本語の改行：文節の切れ目でだけ改行し、句読点の前や単語の途中で折り返さない */
+body{line-break:strict;word-break:auto-phrase}
+.phr body{word-break:keep-all;overflow-wrap:anywhere}
+p,li,.q{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}
+.eyebrow span,.chip,.status,.facts span,.pl,.cl,.sub{white-space:nowrap}
+.eyebrow span{display:inline-block}
+</style>
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="stripe" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div class="hero">
+  <header>
+    <p class="eyebrow"><span>HDS-R ／</span> <span>改訂長谷川式簡易知能評価スケール</span></p>
+    <h1>長谷川式スケール採点シート</h1>
+    <p class="lead">認知機能の低下をざっくり確認するための質問式テストです。各項目で得点を選ぶと、下のバーに合計が出ます。</p>
+    <p class="lead">入力内容は保存されません。記録したいときは「結果をコピー」を使ってください。</p>
+  </header>
+</div>
+<div class="wrap">
+
+  <div class="facts" aria-label="概要">
+    <div><b>30</b><span>点満点</span></div>
+    <div><b>9</b><span>項目</span></div>
+    <div><b>約10</b><span>分で実施</span></div>
+    <div><b>≦20</b><span>認知症の疑い</span></div>
+  </div>
+
+  <section>
+    <h2>採点</h2>
+    <div class="sheet" id="sheet"></div>
+    <div class="meta">
+      <div class="memo"><label for="staff" class="pl">実施者</label><input id="staff" type="text" placeholder="例：山田"></div>
+      <div class="memo"><label for="prev" class="pl">前回の合計点（あれば）</label><input id="prev" type="number" min="0" max="30" inputmode="numeric" placeholder="例：23"></div>
+    </div>
+    <p class="note2">個人情報保護のため、患者さんの氏名はこのシートに入れず、カルテ側で紐づけてください。</p>
+    <div class="memo">
+      <label for="memo" class="pl">実施メモ（様子・中断理由など）</label>
+      <textarea id="memo" placeholder="例：難聴あり、大きめの声で実施。途中で疲れが見られた。"></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn" id="copy" type="button">結果をコピー</button>
+      <button class="btn ghost" id="reset" type="button">すべてクリア</button>
+    </div>
+    <div class="confirm" id="confirm" hidden>
+      <span>入力した得点とメモを消します。</span>
+      <button class="btn" id="resetYes" type="button">クリアする</button>
+      <button class="btn ghost" id="resetNo" type="button">やめる</button>
+    </div>
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+    <textarea id="out" readonly rows="8" hidden aria-label="コピー用の結果"></textarea>
+  </section>
+
+  <section>
+    <h2>声かけの例</h2>
+    <div class="script">
+      <div class="say"><small>始める前に</small><p>「これから物忘れのチェックをさせてください。皆さんにお聞きしている簡単な質問です。分からないところは分からないで大丈夫ですよ。」</p></div>
+      <div class="say"><small>答えに詰まったとき</small><p>「ゆっくりで大丈夫ですよ。」少し待っても出なければ「では次にいきますね」と淡々と進めます。</p></div>
+      <div class="say"><small>終わったとき</small><p>「お疲れさまでした。ご協力ありがとうございます。」点数や結果はその場で伝えず、医師からの説明につなげます。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>実施のポイント</h2>
+    <ul class="points">
+      <li>静かな場所で、本人が落ち着いているときに行います。最初に「物忘れのチェックをさせてください」と目的を伝えると協力を得やすくなります。</li>
+      <li>3つの言葉は「桜・猫・電車」か「梅・犬・自動車」のどちらかを使い、再検査では系列を変えます。</li>
+      <li>5つの物品は時計・鍵・ペンなど互いに関係のない身近な物を使い、1つずつ名前を言いながら見せてから隠します。</li>
+      <li>答えを急かさず、ヒントは決められた範囲だけにします。間違えても否定せず、淡々と次へ進むのが本人の負担を減らすコツです。</li>
+      <li>難聴・視力低下・失語・強い緊張がある場合は点数が下がりやすいので、メモに残しておきます。</li>
+      <li>短い間隔で繰り返すと答えを覚えてしまい、正しく評価できません。再検査では3つの言葉の系列を変えます。</li>
+    </ul>
+  </section>
+
+  <div class="caution">
+    <strong>このシートの位置づけ</strong>
+    <p>HDS-Rはスクリーニング（ふるい分け）用の検査で、点数だけで認知症と診断することはできません。カットオフは20点と21点の間で、20点以下が「認知症の疑い」の目安です。教育歴や体調、うつ状態、その日の気分でも点数は変わります。最終的な判断は、医師が問診・画像検査・生活の様子などと合わせて行います。</p>
+  </div>
+</div>
+
+<div class="bar" aria-live="polite">
+  <div class="bar-in">
+    <div class="total"><b id="total">0</b><span>/ 30点</span></div>
+    <div class="status" id="status">未採点</div>
+  </div>
+  <div class="meter" aria-hidden="true"><i id="fill" style="width:0"></i><em title="20点"></em></div>
+</div>
+
+<script>
+const SERIES=[["桜","猫","電車"],["梅","犬","自動車"]];
+const HINT=["植物","動物","乗り物"];
+let ser=0;
+const ITEMS=[
+ {t:"年齢",q:"お歳はおいくつですか？",
+  tips:["満年齢を答えられれば1点。","2年までの誤差は正解とします。"],
+  parts:[{l:"年齢",o:[0,1]}]},
+ {t:"日時の見当識",q:"今日は何年の何月何日ですか？　何曜日ですか？",
+  tips:["年・月・日・曜日をそれぞれ1点。","聞く順番は入れ替えてもかまいません。","年は西暦・和暦どちらでも正解です。"],
+  parts:[{l:"年",o:[0,1]},{l:"月",o:[0,1]},{l:"日",o:[0,1]},{l:"曜日",o:[0,1]}]},
+ {t:"場所の見当識",q:"私たちが今いるところはどこですか？",
+  tips:["自分から答えられたら2点。病院名や住所が正確でなくても、場所の本質が合っていれば正解です。","5秒待っても出なければ「家ですか？病院ですか？施設ですか？」と選択肢を出し、正しく選べたら1点。"],
+  parts:[{l:"今いる場所",o:[0,1,2]}]},
+ {t:"3つの言葉の記銘",q:"これから言う3つの言葉を言ってみてください。あとでまた聞きますので、よく覚えておいてください。",
+  use:()=>SERIES[ser],
+  tips:["ゆっくり区切って言い、そのまま復唱してもらいます。言えた言葉ごとに1点。","言えなかった言葉は繰り返して覚えてもらいます。3回繰り返しても覚えられなければ、そこで打ち切って次へ進みます。","再検査では、前回と違う系列を使います。"],
+  words:true,parts:[{o:[0,1]},{o:[0,1]},{o:[0,1]}]},
+ {t:"計算",q:"100から7を引くといくつですか？　そこからまた7を引くと？",
+  use:()=>["100−7＝93","93−7＝86"],
+  tips:["93で1点、86で1点。","2問目は「93から」と答えを繰り返さず、「そこからまた7を」と聞きます。","最初の答えが違ったら、そこで打ち切ります。"],
+  abort:true,parts:[{l:"93",o:[0,1]},{l:"86",o:[0,1]}]},
+ {t:"数字の逆唱",q:"これから言う数字を、逆から言ってください。",
+  use:()=>["6・8・2 → 2・8・6","3・5・2・9 → 9・2・5・3"],
+  tips:["数字は間をあけて、ゆっくり読み上げます。","正しく逆から言えたら各1点。","3桁で間違えたら、4桁は行わず打ち切ります。"],
+  abort:true,parts:[{l:"3桁",o:[0,1]},{l:"4桁",o:[0,1]}]},
+ {t:"3つの言葉の遅延再生",q:"先ほど覚えてもらった言葉を、もう一度言ってみてください。",
+  use:()=>SERIES[ser].map((w,j)=>`${w}（ヒント：${HINT[j]}）`),
+  tips:["自分から言えた言葉は各2点。答える順番は問いません。","出てこない言葉は少し考える時間をとってから、1語ずつヒントを出します。2語分をまとめて出さないようにします。","ヒントで正解なら1点、出なければ0点です。"],
+  recall:true,parts:[{o:[0,1,2]},{o:[0,1,2]},{o:[0,1,2]}]},
+ {t:"5つの物品記銘",q:"これから5つの品物を見せます。隠しますので、何があったか言ってください。",
+  use:()=>["時計","鍵","ペン","硬貨","スプーン"],
+  tips:["お互いに関係のない身近な物を使います（例は一例です）。","1つずつ名前を言いながら机に置き、全部見せてから隠します。","言えた数がそのまま得点。順番は問いません。"],
+  parts:[{l:"言えた数",o:[0,1,2,3,4,5]}]},
+ {t:"言葉の流暢性",q:"知っている野菜の名前を、できるだけ多く言ってください。",
+  tips:["同じ野菜を繰り返した場合は数えません。","途中で詰まり、約10秒待っても出なければ終了。","答えた野菜名は下の欄に記録しておくと、重複を確認しやすくなります。"],
+  veg:true,parts:[]}
+];
+const MAX=[1,4,2,3,2,2,6,5,5];
+let S=ITEMS.map(it=>it.veg?{n:null}:{v:it.parts.map(()=>null)});
+
+const PH=("Segmenter" in Intl)?new Intl.Segmenter("ja",{granularity:"word"}):null;
+if(PH)document.documentElement.classList.add("phr");
+const isKana=w=>/^[\u3040-\u309f]+$/.test(w);
+const endsHard=c=>/[\u4e00-\u9fff\u30a0-\u30ffA-Za-z0-9０-９]$/.test(c);
+const startsHard=w=>/^[\u4e00-\u9fff\u30a0-\u30ff]/.test(w);
+function phrase(root){
+  if(!PH||!root)return;
+  const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>/^(SCRIPT|STYLE|TEXTAREA|OPTION)$/.test(n.parentNode.nodeName)?2:1});
+  const nodes=[];while(tw.nextNode())nodes.push(tw.currentNode);
+  nodes.forEach(n=>{
+    const t=n.nodeValue;if(!/[\u3040-\u30ff\u4e00-\u9fff]/.test(t))return;
+    const ch=[];let open="";
+    for(const s of PH.segment(t)){
+      const w=s.segment;
+      if(/^[「（『【〈“]+$/.test(w)){open+=w;continue;}
+      const last=ch.length?ch[ch.length-1]:null;
+      const punct=!s.isWordLike&&!/^\s+$/.test(w);
+      const glue=last!==null&&!open&&(punct||isKana(w)||/^[ー・〜]/.test(w)||(endsHard(last)&&startsHard(w)));
+      if(glue&&(punct||(last+w).length<=12))ch[ch.length-1]=last+w;
+      else{ch.push(open+w);open="";}
+    }
+    if(open)ch.push(open);
+    if(ch.length<2)return;
+    const f=document.createDocumentFragment();
+    ch.forEach((c,i)=>{if(i)f.appendChild(document.createElement("wbr"));f.appendChild(document.createTextNode(c));});
+    n.replaceWith(f);
+  });
+}
+const vegScore=n=>n==null?null:Math.max(0,Math.min(5,n-5));
+function itemScore(i){
+  if(ITEMS[i].veg) return vegScore(S[i].n);
+  const v=S[i].v; if(v.some(x=>x==null)) return null; return v.reduce((a,b)=>a+b,0);
+}
+function partial(i){
+  if(ITEMS[i].veg) return vegScore(S[i].n)||0;
+  return S[i].v.reduce((a,b)=>a+(b||0),0);
+}
+
+function render(){
+  const root=document.getElementById("sheet"); root.innerHTML="";
+  const sw=document.createElement("div"); sw.className="series";
+  sw.innerHTML=`<span class="pl">3つの言葉の系列</span>`;
+  const sseg=document.createElement("span"); sseg.className="seg"; sseg.setAttribute("role","group"); sseg.setAttribute("aria-label","3つの言葉の系列");
+  SERIES.forEach((w,k)=>{const b=document.createElement("button");b.type="button";b.className="wide";b.textContent=w.join("・");b.setAttribute("aria-pressed",ser===k?"true":"false");b.onclick=()=>{ser=k;render();};sseg.appendChild(b);});
+  sw.appendChild(sseg); root.appendChild(sw);
+  ITEMS.forEach((it,i)=>{
+    const el=document.createElement("div"); el.className="item";
+    const sc=itemScore(i);
+    const use=it.use?`<div class="chips"><span class="cl">使う${it.t.includes("物品")?"物":(it.use()[0].match(/[0-9]/)?"数・答え":"言葉")}</span>${it.use().map(u=>`<span class="chip">${u}</span>`).join("")}</div>`:"";
+    el.innerHTML=`<div class="no">${i+1}</div><div class="ihead"><h3>${it.t}</h3><span class="sub ${sc!=null?"done":""}">${sc!=null?sc:"–"} / ${MAX[i]}</span></div><p class="q">${it.q}</p>${use}<div class="tips"><span class="cl">採点のポイント</span><ul>${it.tips.map(t=>`<li>${t}</li>`).join("")}</ul></div>`;
+    const parts=document.createElement("div"); parts.className="parts";
+    if(it.veg){
+      const n=S[i].n;
+      parts.innerHTML=`<div class="part"><label class="pl" for="vegn">言えた数（重複を除く）</label><span class="step"><button type="button" data-d="-1" aria-label="1つ減らす">−</button><input id="vegn" type="number" min="0" max="40" inputmode="numeric" value="${n==null?"":n}" placeholder="–" aria-label="言えた野菜の数"><button type="button" data-d="1" aria-label="1つ増やす">＋</button></span></div><p class="conv">5個以下=0点／6個=1／7個=2／8個=3／9個=4／10個以上=5点</p><label class="pl" for="vegnames">答えた野菜（記録用）</label><textarea id="vegnames" rows="2" placeholder="例：にんじん、たまねぎ、キャベツ…"></textarea>`;
+      parts.querySelectorAll(".step button").forEach(b=>b.onclick=()=>{const d=+b.dataset.d;S[i].n=S[i].n==null?(d>0?1:0):Math.max(0,Math.min(40,S[i].n+d));render();});
+      const vi=parts.querySelector("#vegn");vi.onchange=()=>{const v=vi.value.trim();S[i].n=v===""||isNaN(+v)?null:Math.max(0,Math.min(40,Math.round(+v)));render();};
+      const vn=parts.querySelector("#vegnames");vn.value=S[i].names||"";vn.oninput=()=>{S[i].names=vn.value;};
+    }else{
+      it.parts.forEach((p,j)=>{
+        const blocked=it.abort&&j===1&&S[i].v[0]===0;
+        const row=document.createElement("div"); row.className="part";
+        const lab=(it.words||it.recall)?SERIES[ser][j]:p.l;
+        row.innerHTML=`<span class="pl">${lab}${blocked?' <span class="cut">打ち切り</span>':""}</span>`;
+        const seg=document.createElement("span"); seg.className="seg"; seg.setAttribute("role","group"); seg.setAttribute("aria-label",`${it.t} ${p.l}`);
+        p.o.forEach(val=>{
+          const b=document.createElement("button"); b.type="button"; b.textContent=val+"点";
+          b.setAttribute("aria-pressed",S[i].v[j]===val?"true":"false");
+          b.disabled=blocked&&val!==0;
+          b.onclick=()=>{S[i].v[j]=S[i].v[j]===val?null:val; if(it.abort&&j===0){if(S[i].v[0]===0){S[i].v[1]=0;S[i].auto=true;}else if(S[i].auto){S[i].v[1]=null;S[i].auto=false;}} if(it.abort&&j===1)S[i].auto=false; render();};
+          seg.appendChild(b);
+        });
+        row.appendChild(seg); parts.appendChild(row);
+      });
+    }
+    el.appendChild(parts); root.appendChild(el);
+  });
+  const total=ITEMS.reduce((a,_,i)=>a+partial(i),0);
+  const done=ITEMS.filter((_,i)=>itemScore(i)!=null).length;
+  phrase(root);
+  document.getElementById("total").textContent=total;
+  document.getElementById("fill").style.width=(total/30*100)+"%";
+  const st=document.getElementById("status");
+  if(done<9){st.className="status";st.textContent=`採点中 ${done}/9項目`;}
+  else if(total<=20){st.className="status warn";st.textContent="20点以下：認知症の疑い";}
+  else{st.className="status ok";st.textContent="21点以上：基準範囲";}
+}
+
+function summary(){
+  const d=new Date(); const ds=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+  const total=ITEMS.reduce((a,_,i)=>a+partial(i),0);
+  const done=ITEMS.filter((_,i)=>itemScore(i)!=null).length;
+  let s=`HDS-R 実施日 ${ds}\n合計 ${total}/30点${done<9?`（未採点あり ${done}/9項目）`:""}\n使用した言葉：${SERIES[ser].join("・")}\n`;
+  ITEMS.forEach((it,i)=>{const sc=itemScore(i);s+=`${i+1}. ${it.t} ${sc==null?"未":sc}/${MAX[i]}${it.veg&&S[i].n!=null?`（${S[i].n}個${S[i].names&&S[i].names.trim()?"："+S[i].names.trim():""}）`:""}\n`;});
+  const pv=document.getElementById("prev").value.trim();
+  if(pv!==""&&!isNaN(+pv)){const diff=total-(+pv);s+=`前回 ${pv}点 → 今回 ${total}点（${diff>0?"+":""}${diff}）\n`;}
+  const sf=document.getElementById("staff").value.trim(); if(sf) s+=`実施者：${sf}\n`;
+  const m=document.getElementById("memo").value.trim(); if(m) s+=`メモ：${m}\n`;
+  return s;
+}
+const toast=t=>{const el=document.getElementById("toast");el.textContent=t;setTimeout(()=>{if(el.textContent===t)el.textContent=""},3000);};
+document.getElementById("copy").onclick=()=>{
+  const txt=summary();
+  const fallback=()=>{const ta=document.getElementById("out");ta.hidden=false;ta.value=txt;ta.focus();ta.select();toast("自動でコピーできませんでした。下の枠の文字を選択してコピーしてください。");};
+  try{navigator.clipboard.writeText(txt).then(()=>toast("結果をコピーしました"),fallback);}catch(e){fallback();}
+};
+const cf=document.getElementById("confirm");
+document.getElementById("reset").onclick=()=>{cf.hidden=false;};
+document.getElementById("resetNo").onclick=()=>{cf.hidden=true;};
+document.getElementById("resetYes").onclick=()=>{S=ITEMS.map(it=>it.veg?{n:null}:{v:it.parts.map(()=>null)});document.getElementById("memo").value="";document.getElementById("prev").value="";document.getElementById("out").hidden=true;cf.hidden=true;render();toast("クリアしました");};
+phrase(document.querySelector(".hero"));phrase(document.querySelector(".wrap"));
+render();
+</script>
+</body>
+</html>
