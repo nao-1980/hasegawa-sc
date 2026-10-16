@@ -81,6 +81,16 @@ section{display:flex;flex-direction:column;gap:18px}
 .cl{font-size:12px;color:var(--muted);letter-spacing:.06em;font-weight:700;margin-right:4px}
 .tips{grid-column:2;margin-top:8px;font-size:13px;color:var(--muted)}
 .tips ul{margin:4px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:2px}
+.edit{flex-basis:100%;display:flex;flex-direction:column;gap:8px}
+.edit-note{font-size:13px;color:var(--muted)}
+.wordrow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 8px;align-items:center;font-size:13px}
+@media (min-width:520px){.wordrow{grid-template-columns:auto minmax(0,1fr) auto minmax(0,110px)}}
+.series .seg{flex-wrap:wrap;max-width:100%}
+.series .seg button{flex:1 1 auto}
+.objs{grid-column:2;margin-top:8px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.objgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;width:100%}
+.objgrid input,.wordrow input{padding:7px 8px;font-size:15px}
+.linkbtn{font-family:var(--f-body);font-size:12px;color:var(--accent);background:none;border:0;padding:4px 0;text-decoration:underline;cursor:pointer}
 .series{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--sky)}
 .seg button.wide{font-family:var(--f-body);padding:0 12px}
 .parts{grid-column:2;display:flex;flex-direction:column;gap:8px;margin-top:8px}
@@ -138,8 +148,8 @@ ul.points{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px
   .wrap,.bar-in,.meter{max-width:960px}
   .item{grid-template-columns:34px minmax(0,1fr) 300px;column-gap:24px}
   .ihead{grid-column:2/4}
-  .q,.chips,.tips,.note{grid-column:2}
-  .parts{grid-column:3;grid-row:2/span 3;align-self:start;margin-top:6px;padding-left:20px;border-left:1px dashed var(--line)}
+  .q,.chips,.tips,.note,.objs{grid-column:2}
+  .parts{grid-column:3;grid-row:2/span 4;align-self:start;margin-top:6px;padding-left:20px;border-left:1px dashed var(--line)}
   .part{flex-wrap:nowrap}
   .lead{max-width:62ch}
 }
@@ -246,7 +256,17 @@ img{max-width:100%}
 <script>
 const SERIES=[["桜","猫","電車"],["梅","犬","自動車"]];
 const HINT=["植物","動物","乗り物"];
-let ser=0;
+const OBJ_DEFAULT=["時計","鍵","ペン","硬貨","スプーン"];
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d;}catch(e){return d;}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
+let ser=load("hdsr.ser",0);if(![0,1,2].includes(ser))ser=0;
+let CUSTOM=load("hdsr.custom",{w:["","",""],h:HINT.slice()});
+let OBJ=load("hdsr.obj",OBJ_DEFAULT.slice());
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const words=()=>ser===2?CUSTOM.w.map((w,j)=>w.trim()||`${j+1}つ目`):SERIES[ser];
+const hints=()=>ser===2?CUSTOM.h.map((x,j)=>x.trim()||HINT[j]):HINT;
+const objs=()=>OBJ.map((o,j)=>o.trim()||`${j+1}つ目`);
+function keepFocus(){setTimeout(()=>{const id=document.activeElement&&document.activeElement.id;render();if(id){const e=document.getElementById(id);if(e)e.focus();}},0);}
 const ITEMS=[
  {t:"年齢",q:"お歳はおいくつですか？",
   tips:["満年齢を答えられれば1点。","2年までの誤差は正解とします。"],
@@ -258,7 +278,7 @@ const ITEMS=[
   tips:["自分から答えられたら2点。病院名や住所が正確でなくても、場所の本質が合っていれば正解です。","5秒待っても出なければ「家ですか？病院ですか？施設ですか？」と選択肢を出し、正しく選べたら1点。"],
   parts:[{l:"今いる場所",o:[0,1,2]}]},
  {t:"3つの言葉の記銘",q:"これから言う3つの言葉を言ってみてください。あとでまた聞きますので、よく覚えておいてください。",
-  use:()=>SERIES[ser],
+  use:()=>words(),
   tips:["ゆっくり区切って言い、そのまま復唱してもらいます。言えた言葉ごとに1点。","言えなかった言葉は繰り返して覚えてもらいます。3回繰り返しても覚えられなければ、そこで打ち切って次へ進みます。","再検査では、前回と違う系列を使います。"],
   words:true,parts:[{o:[0,1]},{o:[0,1]},{o:[0,1]}]},
  {t:"計算",q:"100から7を引くといくつですか？　そこからまた7を引くと？",
@@ -270,12 +290,12 @@ const ITEMS=[
   tips:["数字は間をあけて、ゆっくり読み上げます。","正しく逆から言えたら各1点。","3桁で間違えたら、4桁は行わず打ち切ります。"],
   abort:true,parts:[{l:"3桁",o:[0,1]},{l:"4桁",o:[0,1]}]},
  {t:"3つの言葉の遅延再生",q:"先ほど覚えてもらった言葉を、もう一度言ってみてください。",
-  use:()=>SERIES[ser].map((w,j)=>`${w}（ヒント：${HINT[j]}）`),
+  use:()=>words().map((w,j)=>`${w}（ヒント：${hints()[j]}）`),
   tips:["自分から言えた言葉は各2点。答える順番は問いません。","出てこない言葉は少し考える時間をとってから、1語ずつヒントを出します。2語分をまとめて出さないようにします。","ヒントで正解なら1点、出なければ0点です。"],
   recall:true,parts:[{o:[0,1,2]},{o:[0,1,2]},{o:[0,1,2]}]},
  {t:"5つの物品記銘",q:"これから5つの品物を見せます。隠しますので、何があったか言ってください。",
-  use:()=>["時計","鍵","ペン","硬貨","スプーン"],
-  tips:["お互いに関係のない身近な物を使います（例は一例です）。","1つずつ名前を言いながら机に置き、全部見せてから隠します。","言えた数がそのまま得点。順番は問いません。"],
+  objs:true,
+  tips:["お互いに関係のない身近な物を使います。下の欄で、実際に使う物に書き換えられます。","1つずつ名前を言いながら机に置き、全部見せてから隠します。","言えた数がそのまま得点。順番は問いません。"],
   parts:[{l:"言えた数",o:[0,1,2,3,4,5]}]},
  {t:"言葉の流暢性",q:"知っている野菜の名前を、できるだけ多く言ってください。",
   tips:["同じ野菜を繰り返した場合は数えません。","途中で詰まり、約10秒待っても出なければ終了。","答えた野菜名は下の欄に記録しておくと、重複を確認しやすくなります。"],
@@ -325,15 +345,30 @@ function partial(i){
 function render(){
   const root=document.getElementById("sheet"); root.innerHTML="";
   const sw=document.createElement("div"); sw.className="series";
-  sw.innerHTML=`<span class="pl">3つの言葉の系列</span>`;
+  sw.innerHTML=`<span class="pl">3つの言葉</span>`;
   const sseg=document.createElement("span"); sseg.className="seg"; sseg.setAttribute("role","group"); sseg.setAttribute("aria-label","3つの言葉の系列");
-  SERIES.forEach((w,k)=>{const b=document.createElement("button");b.type="button";b.className="wide";b.textContent=w.join("・");b.setAttribute("aria-pressed",ser===k?"true":"false");b.onclick=()=>{ser=k;render();};sseg.appendChild(b);});
-  sw.appendChild(sseg); root.appendChild(sw);
+  [...SERIES.map(w=>w.join("・")),"自分で入力"].forEach((lab,k)=>{const b=document.createElement("button");b.type="button";b.className="wide";b.textContent=lab;b.setAttribute("aria-pressed",ser===k?"true":"false");b.onclick=()=>{ser=k;save("hdsr.ser",k);render();};sseg.appendChild(b);});
+  sw.appendChild(sseg);
+  if(ser===2){
+    const ed=document.createElement("div");ed.className="edit";
+    ed.innerHTML=`<p class="edit-note">使う言葉と、遅延再生で出すヒントを入力します。お互いに関係のない言葉を選んでください。</p>`+[0,1,2].map(j=>`<div class="wordrow"><label for="cw${j}">${j+1}つ目の言葉</label><input id="cw${j}" type="text" value="${esc(CUSTOM.w[j])}" placeholder="例：${["桜","猫","電車"][j]}"><label for="ch${j}">ヒント</label><input id="ch${j}" type="text" value="${esc(CUSTOM.h[j])}" placeholder="${HINT[j]}"></div>`).join("");
+    [0,1,2].forEach(j=>{
+      const w=ed.querySelector("#cw"+j),hh=ed.querySelector("#ch"+j);
+      w.oninput=()=>{CUSTOM.w[j]=w.value;save("hdsr.custom",CUSTOM);};hh.oninput=()=>{CUSTOM.h[j]=hh.value;save("hdsr.custom",CUSTOM);};
+      w.onchange=keepFocus;hh.onchange=keepFocus;
+    });
+    sw.appendChild(ed);
+  }
+  root.appendChild(sw);
   ITEMS.forEach((it,i)=>{
     const el=document.createElement("div"); el.className="item";
     const sc=itemScore(i);
-    const use=it.use?`<div class="chips"><span class="cl">使う${it.t.includes("物品")?"物":(it.use()[0].match(/[0-9]/)?"数・答え":"言葉")}</span>${it.use().map(u=>`<span class="chip">${u}</span>`).join("")}</div>`:"";
-    el.innerHTML=`<div class="no">${i+1}</div><div class="ihead"><h3>${it.t}</h3><span class="sub ${sc!=null?"done":""}">${sc!=null?sc:"–"} / ${MAX[i]}</span></div><p class="q">${it.q}</p>${use}<div class="tips"><span class="cl">採点のポイント</span><ul>${it.tips.map(t=>`<li>${t}</li>`).join("")}</ul></div>`;
+    const use=it.use?`<div class="chips"><span class="cl">使う${it.t.includes("物品")?"物":(it.use()[0].match(/[0-9]/)?"数・答え":"言葉")}</span>${it.use().map(u=>`<span class="chip">${esc(u)}</span>`).join("")}</div>`:"";
+    el.innerHTML=`<div class="no">${i+1}</div><div class="ihead"><h3>${it.t}</h3><span class="sub ${sc!=null?"done":""}">${sc!=null?sc:"–"} / ${MAX[i]}</span></div><p class="q">${it.q}</p>${use}${it.objs?`<div class="objs"><span class="cl">使う物（書き換えられます）</span><div class="objgrid">${OBJ.map((o,j)=>`<input id="ob${j}" type="text" value="${esc(o)}" placeholder="${j+1}つ目" aria-label="${j+1}つ目の物">`).join("")}</div><button type="button" class="linkbtn" id="obreset">例に戻す（${OBJ_DEFAULT.join("・")}）</button></div>`:""}<div class="tips"><span class="cl">採点のポイント</span><ul>${it.tips.map(t=>`<li>${t}</li>`).join("")}</ul></div>`;
+    if(it.objs){
+      el.querySelectorAll(".objgrid input").forEach((inp,j)=>{inp.oninput=()=>{OBJ[j]=inp.value;save("hdsr.obj",OBJ);};});
+      el.querySelector("#obreset").onclick=()=>{OBJ=OBJ_DEFAULT.slice();save("hdsr.obj",OBJ);render();};
+    }
     const parts=document.createElement("div"); parts.className="parts";
     if(it.veg){
       const n=S[i].n;
@@ -345,7 +380,7 @@ function render(){
       it.parts.forEach((p,j)=>{
         const blocked=it.abort&&j===1&&S[i].v[0]===0;
         const row=document.createElement("div"); row.className="part";
-        const lab=(it.words||it.recall)?SERIES[ser][j]:p.l;
+        const lab=(it.words||it.recall)?esc(words()[j]):p.l;
         row.innerHTML=`<span class="pl">${lab}${blocked?' <span class="cut">打ち切り</span>':""}</span>`;
         const seg=document.createElement("span"); seg.className="seg"; seg.setAttribute("role","group"); seg.setAttribute("aria-label",`${it.t} ${p.l}`);
         p.o.forEach(val=>{
@@ -375,7 +410,7 @@ function summary(){
   const d=new Date(); const ds=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
   const total=ITEMS.reduce((a,_,i)=>a+partial(i),0);
   const done=ITEMS.filter((_,i)=>itemScore(i)!=null).length;
-  let s=`HDS-R 実施日 ${ds}\n合計 ${total}/30点${done<9?`（未採点あり ${done}/9項目）`:""}\n使用した言葉：${SERIES[ser].join("・")}\n`;
+  let s=`HDS-R 実施日 ${ds}\n合計 ${total}/30点${done<9?`（未採点あり ${done}/9項目）`:""}\n使用した言葉：${words().map((w,j)=>ser===2?`${w}（${hints()[j]}）`:w).join("・")}\n使用した物：${objs().join("・")}\n`;
   ITEMS.forEach((it,i)=>{const sc=itemScore(i);s+=`${i+1}. ${it.t} ${sc==null?"未":sc}/${MAX[i]}${it.veg&&S[i].n!=null?`（${S[i].n}個${S[i].names&&S[i].names.trim()?"："+S[i].names.trim():""}）`:""}\n`;});
   const pv=document.getElementById("prev").value.trim();
   if(pv!==""&&!isNaN(+pv)){const diff=total-(+pv);s+=`前回 ${pv}点 → 今回 ${total}点（${diff>0?"+":""}${diff}）\n`;}
