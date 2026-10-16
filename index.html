@@ -159,6 +159,42 @@ ul.points{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px
   .step button,.step input{height:44px}
   .btn{padding-block:13px}
 }
+/* 結果欄 */
+.result{border:2px solid var(--accent);background:var(--sheet);padding:16px;display:flex;flex-direction:column;gap:10px}
+.r-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.r-label{font-family:var(--f-display);font-weight:700;font-size:18px;letter-spacing:.12em}
+.r-total{display:flex;align-items:baseline;gap:6px;margin-right:auto}
+.r-total b{font-family:var(--f-display);font-size:40px;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.r-total span{font-family:var(--f-num);color:var(--muted)}
+.r-missing{font-size:13px;color:var(--warn)}
+.r-missing:empty{display:none}
+.r-table{width:100%;border-collapse:collapse;font-size:14px}
+.r-table td{padding:6px 4px;border-top:1px solid var(--line)}
+.r-table td:last-child{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.r-table tr.un td:last-child{color:var(--warn)}
+.report{display:none}
+/* 印刷・PDF：記録用紙だけを出力 */
+@media print{
+  @page{size:A4;margin:14mm 14mm 16mm}
+  :root{padding:0!important}
+  html,body{background:#fff!important;color:#000!important}
+  body>*:not(.report){display:none!important}
+  .report{display:block!important;width:auto;max-width:none;padding-right:1.5mm;box-sizing:border-box;font-family:var(--f-body);font-size:10.5pt;line-height:1.55;color:#000}
+  .report h1{font-family:var(--f-display);font-size:15pt;letter-spacing:.06em;margin:0 0 2mm;text-align:left}
+  .report .rp-sub{font-size:9pt;color:#444;margin:0 0 4mm}
+  .report table{width:100%;border-collapse:collapse;margin:0 0 4mm;table-layout:fixed}
+  .report .rp-items th{width:32%}.report .rp-items td.sc{width:16%}
+  .report th,.report td{border:0.6pt solid #888;padding:1.6mm 2.2mm;vertical-align:top;text-align:left}
+  .report th{background:#f2efe8;font-weight:700;width:20%}
+  .report td.sc{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .report .rp-total{display:flex;align-items:baseline;gap:6mm;border:1.2pt solid #000;padding:3mm 4mm;margin:0 0 4mm}
+  .report .rp-total b{font-size:22pt}
+  .report .rp-judge{font-weight:700}
+  .report .rp-memo{min-height:18mm;white-space:pre-wrap}
+  .report .rp-sign td{height:12mm}
+  .report .rp-foot{font-size:8pt;color:#555;margin-top:3mm}
+  .report tr{break-inside:avoid}
+}
 /* 日本語の改行：文節の切れ目でだけ改行し、句読点の前や単語の途中で折り返さない */
 body{line-break:strict;word-break:auto-phrase}
 .phr body{word-break:keep-all;overflow-wrap:anywhere}
@@ -181,7 +217,7 @@ img{max-width:100%}
     <p class="eyebrow"><span>HDS-R ／</span> <span>改訂長谷川式簡易知能評価スケール</span></p>
     <h1>長谷川式スケール採点シート</h1>
     <p class="lead">認知機能の低下をざっくり確認するための質問式テストです。各項目で得点を選ぶと、下のバーに合計が出ます。</p>
-    <p class="lead">入力内容は保存されません。記録したいときは「結果をコピー」を使ってください。</p>
+    <p class="lead">入力内容は保存されません。記録したいときは「印刷・PDFで保存」か「結果をコピー」を使ってください。</p>
   </header>
 </div>
 <div class="wrap">
@@ -196,6 +232,15 @@ img{max-width:100%}
   <section>
     <h2>採点</h2>
     <div class="sheet" id="sheet"></div>
+    <div class="result" id="result" aria-live="polite">
+      <div class="r-head">
+        <span class="r-label">合計</span>
+        <span class="r-total"><b id="rTotal">0</b><span>/ 30点</span></span>
+        <span class="status" id="rStatus">採点中</span>
+      </div>
+      <p class="r-missing" id="rMissing"></p>
+      <table class="r-table" id="rTable"></table>
+    </div>
     <div class="meta">
       <div class="memo"><label for="staff" class="pl">実施者</label><input id="staff" type="text" placeholder="例：山田"></div>
       <div class="memo"><label for="prev" class="pl">前回の合計点（あれば）</label><input id="prev" type="number" min="0" max="30" inputmode="numeric" placeholder="例：23"></div>
@@ -206,7 +251,8 @@ img{max-width:100%}
       <textarea id="memo" placeholder="例：難聴あり、大きめの声で実施。途中で疲れが見られた。"></textarea>
     </div>
     <div class="actions">
-      <button class="btn" id="copy" type="button">結果をコピー</button>
+      <button class="btn" id="print" type="button">印刷・PDFで保存</button>
+      <button class="btn ghost" id="copy" type="button">結果をコピー</button>
       <button class="btn ghost" id="reset" type="button">すべてクリア</button>
     </div>
     <div class="confirm" id="confirm" hidden>
@@ -244,6 +290,8 @@ img{max-width:100%}
     <p>HDS-Rはスクリーニング（ふるい分け）用の検査で、点数だけで認知症と診断することはできません。カットオフは20点と21点の間で、20点以下が「認知症の疑い」の目安です。教育歴や体調、うつ状態、その日の気分でも点数は変わります。最終的な判断は、医師が問診・画像検査・生活の様子などと合わせて行います。</p>
   </div>
 </div>
+
+<div id="report" class="report" aria-hidden="true"></div>
 
 <div class="bar" aria-live="polite">
   <div class="bar-in">
@@ -398,14 +446,55 @@ function render(){
   const total=ITEMS.reduce((a,_,i)=>a+partial(i),0);
   const done=ITEMS.filter((_,i)=>itemScore(i)!=null).length;
   phrase(root);
+  updateResult(total,done);
   document.getElementById("total").textContent=total;
   document.getElementById("fill").style.width=(total/30*100)+"%";
-  const st=document.getElementById("status");
-  if(done<9){st.className="status";st.textContent=`採点中 ${done}/9項目`;}
-  else if(total<=20){st.className="status warn";st.textContent="20点以下：認知症の疑い";}
-  else{st.className="status ok";st.textContent="21点以上：基準範囲";}
+  const st=document.getElementById("status");const jj=judge(total,done);st.className=jj.cls;st.textContent=jj.txt;
 }
 
+function judge(total,done){
+  if(done<9) return {cls:"status",txt:`採点中 ${done}/9項目`};
+  return total<=20?{cls:"status warn",txt:"20点以下：認知症の疑い"}:{cls:"status ok",txt:"21点以上：基準範囲"};
+}
+function updateResult(total,done){
+  document.getElementById("rTotal").textContent=total;
+  const j=judge(total,done);const st=document.getElementById("rStatus");st.className=j.cls;st.textContent=j.txt;
+  const miss=ITEMS.map((it,i)=>itemScore(i)==null?`${i+1}.${it.t}`:null).filter(Boolean);
+  document.getElementById("rMissing").textContent=miss.length?`未採点：${miss.join("、")}（未採点の項目は0点として合計しています）`:"";
+  document.getElementById("rTable").innerHTML=ITEMS.map((it,i)=>{const sc=itemScore(i);return `<tr class="${sc==null?"un":""}"><td>${i+1}. ${it.t}</td><td>${sc==null?"未採点":sc} / ${MAX[i]}</td></tr>`;}).join("");
+}
+function buildReport(){
+  const d=new Date();const ds=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+  const total=ITEMS.reduce((a,_,i)=>a+partial(i),0);
+  const done=ITEMS.filter((_,i)=>itemScore(i)!=null).length;
+  const j=judge(total,done);
+  const staff=esc(document.getElementById("staff").value.trim());
+  const pv=document.getElementById("prev").value.trim();
+  const memo=esc(document.getElementById("memo").value.trim());
+  const detail=i=>{
+    const it=ITEMS[i];
+    if(it.words) return "使用："+esc(words().join("・"));
+    if(it.recall) return "ヒント："+esc(hints().join("・"));
+    if(it.objs) return "使用："+esc(objs().join("・"));
+    if(it.veg) return S[i].n!=null?`${S[i].n}個${S[i].names&&S[i].names.trim()?"（"+esc(S[i].names.trim())+"）":""}`:"";
+    return "";
+  };
+  const rows=ITEMS.map((it,i)=>{const sc=itemScore(i);return `<tr><th>${i+1}. ${it.t}</th><td>${detail(i)}</td><td class="sc">${sc==null?"未採点":sc} / ${MAX[i]}</td></tr>`;}).join("");
+  let prevTxt="";
+  if(pv!==""&&!isNaN(+pv)){const diff=total-(+pv);prevTxt=`前回 ${esc(pv)}点 → 今回 ${total}点（${diff>0?"+":""}${diff}）`;}
+  document.getElementById("report").innerHTML=`
+    <h1>改訂長谷川式簡易知能評価スケール（HDS-R）記録</h1>
+    <p class="rp-sub">実施日：${ds}　　実施者：${staff||"＿＿＿＿＿＿＿＿"}</p>
+    <table><tr><th>患者ID</th><td></td><th>年齢</th><td></td></tr></table>
+    <div class="rp-total"><span>合計</span><b>${total} / 30点</b><span class="rp-judge">${j.txt}</span></div>
+    ${prevTxt?`<p class="rp-sub">${prevTxt}</p>`:""}
+    <table class="rp-items"><colgroup><col style="width:32%"><col><col style="width:16%"></colgroup><tr><th>項目</th><th style="width:auto">内容</th><th style="text-align:center">得点</th></tr>${rows}</table>
+    <table><tr><th>実施メモ</th><td class="rp-memo">${memo}</td></tr></table>
+    <table class="rp-sign"><tr><th>確認医師</th><td></td><th>確認日</th><td></td></tr></table>
+    <p class="rp-foot">HDS-Rはスクリーニング検査であり、点数のみで診断するものではありません。20点以下を認知症の疑いの目安とします（カットオフ20/21）。</p>`;
+}
+window.addEventListener("beforeprint",buildReport);
+document.getElementById("print").onclick=()=>{buildReport();window.print();};
 function summary(){
   const d=new Date(); const ds=`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
   const total=ITEMS.reduce((a,_,i)=>a+partial(i),0);
